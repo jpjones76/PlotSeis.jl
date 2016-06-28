@@ -42,17 +42,11 @@ end
 
 """
 plotseis(S::SeisData)
-
 Renormalized, time-aligned trace plot of data in S.x using timestamps in S.t.
-
 plotseis(S::SeisData, fmt=FMT)
-
 Use format FMT to format x-labels. FMT is a standard C date format string.
-
 plotseis(S::SeisData, use_name=true)
-
 Use channel names, instead of channel IDs, to label plot axes.
-
 """
 function plotseis(S::SeisData; fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
   # Basic plotting
@@ -87,11 +81,8 @@ end
 
 """
 plot_uptimes(S)
-
 Bar plot of uptimes for each channel in S.
-
 plot_uptimes(S, mode='b')
-
 Bar plot of network uptime for all channels that record timeseries data, scaled
 so that y=1 corresponds to all sensors active. Non-timeseries data in S are not
 counted.
