@@ -1,7 +1,8 @@
 VERSION >= v"0.4.0" && __precompile__(true)
-using PyPlot
-using SeisIO.SeisData
 module PlotSeis
+using PyPlot
+import SeisIO.SeisData
+
 export plotseis, plot_uptimes
 
 rescaled(x::Array{Float64,1},i::Int) = (Float64(i) + x./(2.0*maximum(abs(x))))
@@ -49,7 +50,7 @@ Use format FMT to format x-labels. FMT is a standard C date format string.
 plotseis(S::SeisData, use_name=true)
 Use channel names, instead of channel IDs, to label plot axes.
 """
-function plotseis(S::SeisData; fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
+function plotseis(S::SeisIO.SeisData; fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
   # Basic plotting
   figure()
   axes([0.15, 0.1, 0.8, 0.8])
@@ -88,7 +89,7 @@ Bar plot of network uptime for all channels that record timeseries data, scaled
 so that y=1 corresponds to all sensors active. Non-timeseries data in S are not
 counted.
 """
-function plot_uptimes(S::SeisData; mode='c'::Char, fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
+function plot_uptimes(S::SeisIO.SeisData; mode='c'::Char, fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
   figure()
   ax = axes([0.15, 0.1, 0.8, 0.8])
 
@@ -100,7 +101,7 @@ function plot_uptimes(S::SeisData; mode='c'::Char, fmt="auto"::ASCIIString, use_
   return nothing
 end
 
-function uptimes_bar(S::SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
+function uptimes_bar(S::SeisIO.SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
   yflag = false
@@ -128,7 +129,7 @@ function uptimes_bar(S::SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool
   return nothing
 end
 
-function uptimes_sum(S::SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
+function uptimes_sum(S::SeisIO.SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
   yflag = false
