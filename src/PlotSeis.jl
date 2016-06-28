@@ -1,7 +1,6 @@
 VERSION >= v"0.4.0" && __precompile__(true)
 module PlotSeis
 using PyPlot
-import SeisIO.SeisData
 
 export plotseis, plot_uptimes
 
@@ -43,14 +42,14 @@ function xfmt(xmi::Int64, xma::Int64, yflag::Bool; fmt="auto"::ASCIIString, auto
 end
 
 """
-plotseis(S::SeisData)
+plotseis(S)
 Renormalized, time-aligned trace plot of data in S.x using timestamps in S.t.
-plotseis(S::SeisData, fmt=FMT)
+plotseis(S, fmt=FMT)
 Use format FMT to format x-labels. FMT is a standard C date format string.
-plotseis(S::SeisData, use_name=true)
+plotseis(S, use_name=true)
 Use channel names, instead of channel IDs, to label plot axes.
 """
-function plotseis(S::SeisIO.SeisData; fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
+function plotseis(S; fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
   # Basic plotting
   figure()
   axes([0.15, 0.1, 0.8, 0.8])
@@ -89,7 +88,7 @@ Bar plot of network uptime for all channels that record timeseries data, scaled
 so that y=1 corresponds to all sensors active. Non-timeseries data in S are not
 counted.
 """
-function plot_uptimes(S::SeisIO.SeisData; mode='c'::Char, fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
+function plot_uptimes(S; mode='c'::Char, fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
   figure()
   ax = axes([0.15, 0.1, 0.8, 0.8])
 
@@ -101,7 +100,7 @@ function plot_uptimes(S::SeisIO.SeisData; mode='c'::Char, fmt="auto"::ASCIIStrin
   return nothing
 end
 
-function uptimes_bar(S::SeisIO.SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
+function uptimes_bar(S, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
   yflag = false
@@ -129,7 +128,7 @@ function uptimes_bar(S::SeisIO.SeisData, fmt::ASCIIString, use_name::Bool, auto_
   return nothing
 end
 
-function uptimes_sum(S::SeisIO.SeisData, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
+function uptimes_sum(S, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
   yflag = false
