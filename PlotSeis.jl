@@ -1,6 +1,6 @@
 VERSION >= v"0.4.0" && __precompile__(true)
-module PlotSeis
 using PyPlot, SeisIO
+module PlotSeis
 export plotseis, plot_uptimes
 
 rescaled(x::Array{Float64,1},i::Int) = (Float64(i) + x./(2.0*maximum(abs(x))))
