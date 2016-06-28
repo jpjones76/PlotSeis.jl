@@ -1,6 +1,6 @@
 VERSION >= v"0.4.0" && __precompile__(true)
 using PyPlot
-using SeisIO: SeisData
+using SeisIO
 module PlotSeis
 export plotseis, plot_uptimes
 
