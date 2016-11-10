@@ -1,12 +1,12 @@
 VERSION >= v"0.4.0" && __precompile__(true)
 module PlotSeis
-using PyPlot
-
+using PyPlot, SeisIO
 export plotseis, plot_uptimes
+const μs = 1.0e-6
 
 rescaled(x::Array{Float64,1},i::Int) = (Float64(i) + x./(2.0*maximum(abs(x))))
 
-function xfmt(xmi::Int64, xma::Int64, yflag::Bool; fmt="auto"::ASCIIString, auto_x=true::Bool, N=4::Int)
+function xfmt(xmi::Int64, xma::Int64, yflag::Bool; fmt="auto"::String, auto_x=true::Bool, N=4::Int)
   dt = (xma-xmi)
   if fmt == "auto"
     if dt*μs < 3600
@@ -30,7 +30,7 @@ function xfmt(xmi::Int64, xma::Int64, yflag::Bool; fmt="auto"::ASCIIString, auto
 
   if auto_x
     xt = Array{Float64,1}[]
-    xl = Array{ASCIIString,1}[]
+    xl = Array{String,1}[]
     for i = 1:N
       xt = cat(1, xt, xmi+(i-1)*dt)
       xl = cat(1, xl, Libc.strftime(fmt,xt[i]*μs))
@@ -49,7 +49,7 @@ Use format FMT to format x-labels. FMT is a standard C date format string.
 plotseis(S, use_name=true)
 Use channel names, instead of channel IDs, to label plot axes.
 """
-function plotseis(S; fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
+function plotseis(S::SeisData; fmt="auto"::String, use_name=false::Bool, auto_x=true::Bool)
   # Basic plotting
   figure()
   axes([0.15, 0.1, 0.8, 0.8])
@@ -88,7 +88,7 @@ Bar plot of network uptime for all channels that record timeseries data, scaled
 so that y=1 corresponds to all sensors active. Non-timeseries data in S are not
 counted.
 """
-function plot_uptimes(S; mode='c'::Char, fmt="auto"::ASCIIString, use_name=false::Bool, auto_x=true::Bool)
+function plot_uptimes(S::SeisData; mode='c'::Char, fmt="auto"::String, use_name=false::Bool, auto_x=true::Bool)
   figure()
   ax = axes([0.15, 0.1, 0.8, 0.8])
 
@@ -100,7 +100,7 @@ function plot_uptimes(S; mode='c'::Char, fmt="auto"::ASCIIString, use_name=false
   return nothing
 end
 
-function uptimes_bar(S, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
+function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
   yflag = false
@@ -128,7 +128,7 @@ function uptimes_bar(S, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
   return nothing
 end
 
-function uptimes_sum(S, fmt::ASCIIString, use_name::Bool, auto_x::Bool)
+function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
   yflag = false
