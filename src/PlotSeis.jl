@@ -58,7 +58,7 @@ function plotseis(S::SeisData; fmt="auto"::String, use_name=false::Bool, auto_x=
   yflag = false
 
   for i = 1:1:S.n
-    t = t_expand(S.t[i],S.fs[i])
+    t = SeisIO.t_expand(S.t[i],S.fs[i])
     xmi = min(xmi, t[1])
     xma = max(xmi, t[end])
     floor(t[1]*μs/31536000) == floor(t[end]*μs/31536000) || (yflag == true)
@@ -106,7 +106,7 @@ function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   yflag = false
 
   for i = 1:S.n
-    t = t_expand(S.t[i],S.fs[i])
+    t = SeisIO.t_expand(S.t[i],S.fs[i])
     xmi = min(xmi, t[1])
     xma = max(xma, t[end])
     floor(t[1]*μs/31536000) == floor(t[end]*μs/31536000) || (yflag == true)
@@ -135,7 +135,7 @@ function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   tt = Array{Int64,2}(0,2)
 
   for i = 1:S.n
-    t = t_expand(S.t[i],S.fs[i])
+    t = SeisIO.t_expand(S.t[i],S.fs[i])
     S.fs[i] == 0 && continue
     xmi = min(xmi, t[1])
     xma = max(xma, t[end])
