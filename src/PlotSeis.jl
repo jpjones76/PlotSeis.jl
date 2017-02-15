@@ -11,16 +11,16 @@ function xfmt(xmi::Int64, xma::Int64, yflag::Bool; fmt="auto"::String, auto_x=tr
   if fmt == "auto"
     if dt*μs < 3600
       fmt ="%M:%S"
-      xstr = @sprintf("Time [%s] from %s:00:00 (UTC)",fmt,Libc.strftime("%Y-%m-%d %H",tzcorr()+xmi*μs))
+      xstr = @sprintf("Time [%s] from %s:00:00 (UTC)",fmt,Libc.strftime("%Y-%m-%d %H",SeisIO.tzcorr()+xmi*μs))
     elseif dt*μs < 86400
       fmt ="%T"
-      xstr = @sprintf("Time [%s], %s (UTC)",fmt,Libc.strftime("%Y-%m-%d",tzcorr()+xmi*μs))
+      xstr = @sprintf("Time [%s], %s (UTC)",fmt,Libc.strftime("%Y-%m-%d",SeisIO.tzcorr()+xmi*μs))
     elseif yflag
       fmt ="%Y-%m-%d %H:%M:%S"
       xstr = @sprintf("Time [%s] (UTC)",fmt)
     else
       fmt ="%d %b %T"
-      xstr = @sprintf("Time [%s] (UTC), %s",fmt,Libc.strftime("%Y",tzcorr()+xmi*μs))
+      xstr = @sprintf("Time [%s] (UTC), %s",fmt,Libc.strftime("%Y",SeisIO.tzcorr()+xmi*μs))
     end
     xlabel(xstr)
   else
