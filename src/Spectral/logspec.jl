@@ -23,10 +23,10 @@ function logspec(S::SeisData, k::Union{Int,String}, nx::Int, no::Int;
   fmax = min(fmax, 0.45*fs)                           # Maximum frequency to plot
 
   # Generate spectrogram
-  sp = spectrogram(x, nx, no, fs=fs)
-  t = collect(time(sp))                               # Time from start (s)
-  f = collect(freq(sp))                               # Frequency (Hz)
-  P = 10.*log10(power(sp))                            # Power (dB)
+  sg = spectrogram(x, nx, no, fs=fs)
+  t = collect(time(sg))                               # Time from start (s)
+  f = collect(freq(sg))                               # Frequency (Hz)
+  P = 10.*log10(power(sg))                            # Power (dB)
 
   # Remove all vals of -∞
   P0 = minimum(P[!isinf(P)])
