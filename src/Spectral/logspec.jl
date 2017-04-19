@@ -1,8 +1,8 @@
 using PyCall, PyPlot, SeisIO
 @pyimport matplotlib.mlab as mlab
 
-function logspec{T}(S::SeisData, k::Union{Int,String}, nx::Int, no::Int;
-  fmin=0.1::T, fmax=Inf::T, r=80::Real, pm=(-Inf)::Real, xlfmt="mm-ddTHH:MM"::String)
+function logspec(S::SeisData, k::Union{Int,String}, nx::Int, no::Int;
+  fmin=0.1::Float64, fmax=Inf::Float64, r=80::Real, pm=(-Inf)::Real, xlfmt="mm-ddTHH:MM"::String)
 
   j = isa(k, String) ? findfirst(S.id[i].==k) : k
   j == 0 && error("No matching ID or no channel at the specified #")
