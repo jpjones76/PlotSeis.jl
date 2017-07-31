@@ -5,6 +5,9 @@ export plotseis,
        plot_uptimes,
        logspec
 
+# Utilities
+include("Util/setax.jl")
+
 # Time series plots
 include("TimeSeries/ts_internals.jl")
 include("TimeSeries/plotseis.jl")
