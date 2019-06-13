@@ -5,6 +5,9 @@ A visualization tool for SeisIO.jl [based on PyPlot](./NOTE.md). Documentation i
 `logspec`.
 
 ## Installation
+1. Ensure Python is installed and working on your machine.
+2. [Install matplotlib for Python.](https://matplotlib.org/users/installing.html)
+3. Run these commands from the Julia prompt:
 ```
 ]
 add https://github.com/jpjones76/PlotSeis.jl
