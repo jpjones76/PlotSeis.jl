@@ -1,3 +1,4 @@
+ENV["MPLBACKEND"]="agg" # no GUI
 using SeisIO, SeisIO.RandSeis, PlotSeis
 using Random: randn
 using Dates: now
