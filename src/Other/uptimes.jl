@@ -1,79 +1,104 @@
 function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   xmi = 2^63-1
   xma = xmi+1
-  yflag = false
+  fig = PyPlot.figure(figsize=[8.0, 6.0], dpi=150)
+  ax = PyPlot.axes([0.20, 0.10, 0.72, 0.85])
 
   for i = 1:S.n
-    t = SeisIO.t_expand(S.t[i],S.fs[i])
-    xmi = min(xmi, t[1])
-    xma = max(xma, t[end])
-    floor(t[1]*μs/31536000) == floor(t[end]*μs/31536000) || (yflag == true)
-    if S.fs[i] == 0
-      plot(t, collect(repeated(i,length(t))),  marker="o", markeredgecolor=[0,0,0], markerfacecolor=[1,0,1], markersize=8, ls="none")
+    if S.fs[i] == 0.0
+      t = view(S.t[i], :, 2)
+      x = rescaled(S.x[i].-mean(S.x[i]),i)
+      plot(t, x, "ko", markersize = 2.0)
     else
-      for j = 1:size(S.t[i],1)-1
-        st = t[S.t[i][j,1]+1]
-        en = t[S.t[i][j+1,1]-1]
-        broken_barh([(st, en-st)], (i-0.4, 0.8), facecolor=[0,0,1])
+      rect_x = Array{Float64,1}(undef, 0)
+      rect_y = Array{Float64,1}(undef, 0)
+      t = t_win(S.t[i], S.fs[i])
+      for j = 1:size(t,1)
+        ts = Float64(t[j,1])
+        te = Float64(t[j,2])
+        append!(rect_x, [ts, te, te, ts, ts])
+        append!(rect_y, [i-0.48, i-0.48, i+0.48, i+0.48, i-0.48])
       end
+
+      p = fill(rect_x, rect_y, linewidth=1.0, edgecolor="k")
     end
+    xmi = min(xmi, first(t))
+    xma = max(xma, last(t))
   end
 
-  xfmt(xmi, xma, yflag, fmt=fmt, auto_x=auto_x)
-  ylim(0.5, S.n+0.5)
-  yticks(collect(1:1:S.n), map((i) -> replace(i, " ", ""), use_name? S.name : S.id))
-  title("Channel uptimes")
-  return nothing
+  PyPlot.title("Channel Uptimes", fontweight="bold", fontsize=13.0, family="serif", color="black")
+
+  # Y scaling and axis manipulation
+  PyPlot.yticks(1:S.n, map((i) -> replace(i, " " => ""), use_name ? S.name : S.id))
+  PyPlot.ylim(0.5, S.n+0.5)
+  PyPlot.setp(gca().get_yticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
+
+  # X scaling and axis manipulation
+  xfmt(xmi, xma, fmt, true, 5)
+  PyPlot.setp(gca().get_xticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
+
+  return fig
 end
 
 function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
-  xmi = 2^63-1
-  xma = xmi+1
-  yflag = false
-  tt = Array{Int64,2}(0,2)
-
+  ntr = sum(S.fs.>0)
+  W = Array{Int64, 1}(undef, 0)
   for i = 1:S.n
-    t = SeisIO.t_expand(S.t[i],S.fs[i])
-    S.fs[i] == 0 && continue
-    xmi = min(xmi, t[1])
-    xma = max(xma, t[end])
-    floor(t[1]*μs/31536000) == floor(t[end]*μs/31536000) || (yflag == true)
-    for j = 1:size(S.t[i],1)-1
-      st = t[S.t[i][j,1]+1]
-      en = t[S.t[i][j+1,1]-1]
-      tt = [tt; [st 1]; [en -1]]
+    S.fs[i] == 0.0 && continue
+    w = div.(t_win(S.t[i], S.fs[i]), 1000000)
+    for i = 1:size(w,1)
+      append!(W, collect(w[i,1]:w[i,2]))
     end
   end
-  tt = sortrows(tt)
-  t = tt[:,1]
-  h = cumsum(tt[:,2])./S.n
-  w = diff(t)
-  x = t[1:end-1]
-  bar(x,h[1:end-1],w,color="b")
+  sort!(W)
+  t = collect(first(W):last(W))
+  y = zeros(Int64, length(t))
+  i = 0
+  j = 1
+  τ = first(t)
+  while i < length(W)
+    i = i + 1
+    if W[i] == τ
+      y[j] += 1
+    else
+      while W[i] != τ
+        j += 1
+        j > length(t) && break
+        τ = t[j]
+      end
+      y[j] += 1
+    end
+  end
+  fig = PyPlot.figure(figsize=[8.0, 6.0], dpi=150)
+  step(t.*1000000, y, color="k", linewidth=2.0)
 
-  xfmt(xmi, xma, yflag, fmt=fmt, auto_x=auto_x)
-  ylabel(@sprintf("%% of Network Active (n=%i)", sum(S.fs.>0)))
-  ylim(0.0, 1.0)
-  yticks(collect(0.0:0.2:1.0))
-  return nothing
+  # Y scaling and axis manipulation
+  dy = ntr > 24 ? 5.0 : ntr > 19 ? 4.0 : ntr > 14 ? 3.0 : ntr > 9 ? 2.0 : 1.0
+  PyPlot.ylim(0, ntr)
+  PyPlot.yticks(ntr:-dy:0)
+  PyPlot.ylabel("Active Channels", fontweight="bold", fontsize=12.0, family="serif", color="black")
+  PyPlot.setp(gca().get_yticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
+
+  # X scaling and axis manipulation
+  xfmt(first(t)*1000000, last(t)*1000000, fmt, true, 5)
+  PyPlot.setp(gca().get_xticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
+  return fig
 end
 
 """
-plot_uptimes(S)
-Bar plot of uptimes for each channel in S.
-plot_uptimes(S, mode='b')
-Bar plot of network uptime for all channels that record timeseries data, scaled
-so that y=1 corresponds to all sensors active. Non-timeseries data in S are not
-counted.
-"""
-function plot_uptimes(S::SeisData; mode='c'::Char, fmt="auto"::String, use_name=false::Bool, auto_x=true::Bool)
-  figure()
-  ax = axes([0.15, 0.1, 0.8, 0.8])
+    uptimes(S[, summed=false])
 
-  if mode == 'c'
-    uptimes_bar(S, fmt, use_name, auto_x)
-  elseif mode == 'b'
-    uptimes_sum(S, fmt, use_name, auto_x)
+Bar plot of uptimes for each channel in S.
+
+If summed==true, make a bar plot of uptimes for all channels in S that record
+timeseries data, scaled so that y=1 corresponds to 100% of channels active.
+Non-timeseries data in S are not counted in a summed uptime plot.
+"""
+function uptimes(S::SeisData; summed::Bool=false, fmt="auto"::String, use_name=false::Bool, auto_x=true::Bool)
+  if summed
+    fig = uptimes_sum(S, fmt, use_name, auto_x)
+  else
+    fig = uptimes_bar(S, fmt, use_name, auto_x)
   end
-  return nothing
+  return fig
 end

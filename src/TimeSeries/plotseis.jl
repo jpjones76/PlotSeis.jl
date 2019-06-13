@@ -1,41 +1,39 @@
-const μs = 1.0e-6
-rescaled(x::Array{Float64,1},i::Int) = (Float64(i) + x./(2.0*maximum(abs(x))))
-
 """
-plotseis(S)
+    plotseis(S[, fmt=FMT, use_name=false, n=N])
+
 Renormalized, time-aligned trace plot of data in S.x using timestamps in S.t.
-plotseis(S, fmt=FMT)
-Use format FMT to format x-labels. FMT is a standard C date format string.
-plotseis(S, use_name=true)
-Use channel names, instead of channel IDs, to label plot axes.
-"""
-function plotseis(S::SeisData; fmt="auto"::String, use_name=false::Bool, auto_x=true::Bool)
-  # Basic plotting
-  figure()
-  axes([0.15, 0.1, 0.8, 0.8])
-  xmi = 2^63-1
-  xma = xmi+1
-  yflag = false
 
-  for i = 1:1:S.n
-    t = SeisIO.t_expand(S.t[i], S.fs[i])
-    xmi = min(xmi, t[1])
-    xma = max(xmi, t[end])
-    floor(t[1]*μs/31536000) == floor(t[end]*μs/31536000) || (yflag == true)
+Keywords:
+* fmt=FMT formats x-axis labels using C-language `strftime` format string `FMT`
+to format x-labels. If unspecified, the format is determined by when data in `S`
+start and end.
+* use_name=true uses `S.name`, rather than `S.id`, for labels.
+* n=N sets the number of X-axis ticks.
+
+"""
+function plotseis(S::SeisData; fmt="auto"::String, use_name=false::Bool, n::Int64=5)
+  xmi = typemax(Int64)
+  xma = typemin(Int64)
+
+  fig = PyPlot.figure(figsize=[8.0, 6.0], dpi=150)
+  ax = PyPlot.axes([0.20, 0.10, 0.72, 0.85])
+  for i = 1:S.n
+    x = rescaled(S.x[i].-mean(S.x[i]),i)
     if S.fs[i] > 0
-      x = rescaled(S.x[i]-mean(S.x[i]),i)
-      plot(t, x, linewidth=1)
+      t = t_expand(S.t[i], S.fs[i])
+      plot(t, x, linewidth=1.0)
     else
-      x = (i-0.4) .+ 0.8*S.x[i]./maximum(S.x[i])
-      for j = 1:length(t)
-        plot([t[j], t[j]], [i-0.4, x[j]], color=[0, 0, 0], ls="-", lw=1)
-      end
-      plot(t, x, linewidth=1, marker="o", markeredgecolor=[0,0,0], ls="none")
+      t = view(S.t[i], :, 2)
+      plot(t, x, "o", linewidth=1, markeredgecolor=[0,0,0])
     end
+    xmi = min(xmi, t[1])
+    xma = max(xma, t[end])
   end
 
-  xfmt(xmi, xma, yflag, fmt=fmt, auto_x=auto_x)
-  ylim(0.5, S.n+0.5)
-  yticks(collect(1:1:S.n), map((i) -> replace(i, " ", ""), use_name? S.name : S.id))
-  return nothing
+  xfmt(xmi, xma, fmt, true, n)
+  PyPlot.setp(gca().get_yticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
+  PyPlot.setp(gca().get_xticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
+  PyPlot.yticks(1:S.n, map((i) -> replace(i, " " => ""), use_name ? S.name : S.id))
+  PyPlot.ylim(0.5, S.n+0.5)
+  return fig
 end

@@ -1,12 +1,12 @@
-# VERSION >= v"0.4.0" && __precompile__(true)
+__precompile__()
 module PlotSeis
-using SeisIO, DSP, PyPlot, PyCall
+using Printf, SeisIO, PyPlot
+using Statistics: mean
+using DSP: spectrogram, time, freq, power
+import SeisIO: t_expand, μs, t_win
 export plotseis,
-       plot_uptimes,
+       uptimes,
        logspec
-
-# Utilities
-include("Util/setax.jl")
 
 # Time series plots
 include("TimeSeries/ts_internals.jl")

@@ -1,3 +1,3 @@
 # PlotSeis.jl
 
-New home of PlotSeis, visualization tools for SeisIO.jl
+Visualization tools for SeisIO.jl; [currently uses PyPlot](../NOTE.md).
