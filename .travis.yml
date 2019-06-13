@@ -7,7 +7,6 @@ codecov: true
 coveralls: true
 os:
 - linux
-- osx
 julia:
 - 1.0
 - 1.1
@@ -15,12 +14,11 @@ julia:
 addons:
   apt:
     packages:
-      - python-matplotlib
       - python3-matplotlib
 env:
   matrix:
-    - PYTHON=python  # python 2.7
-    - PYTHON=python3 # python 3.5
+    - PYTHON=python
+    - PYTHON=python3
 matrix:
   allow_failures:
   - julia: nightly

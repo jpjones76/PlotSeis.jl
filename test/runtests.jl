@@ -9,12 +9,17 @@ test_start = now()
 printstyled(stdout, string(test_start, ": tests begin, source_dir = ", path, "/\n"), color=:light_green, bold=true)
 
 printstyled("Generating data\n", color=:light_green, bold=true)
-n = (1,3,5,10,15,20,23,25)
+n = (1,1,4,10,15,20,23,25)
 A = Array{SeisData,1}(undef, 8)
 A[1] = SeisData(randSeisChannel(s=true))
 A[1].x[1] = randn(100000)
-A[1].t[1] = [1 0; 100000 0]
-for i = 2:8
+A[1].t[1] = [1 -100000; 100000 0]
+A[1].fs[1] = 50.0
+A[2] = SeisData(randSeisChannel(s=true))
+A[2].x[1] = randn(2000)
+A[2].t[1] = [1 0; 2000 0]
+A[2].fs[1] = 4000.0
+for i = 3:8
   A[i] = randSeisData(n[i])
 end
 
