@@ -29,7 +29,7 @@ function plotseis(S::SeisData; fmt::String="auto", use_name::Bool=false, nxt::In
     xma = max(xma, t[end])
   end
 
-  xfmt(xmi, xma, fmt, true, nxt)
+  xfmt(xmi, xma, fmt, nxt)
   PyPlot.setp(gca().get_yticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
   PyPlot.setp(gca().get_xticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
   PyPlot.yticks(1:S.n, map((i) -> replace(i, " " => ""), use_name ? S.name : S.id))

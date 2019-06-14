@@ -81,7 +81,7 @@ function logspec(S::SeisData, k::Union{Int64,String};
   ts_xl = @sprintf("%0.2e", xmax)
   PyPlot.plot(tx, seis.x, linewidth=1.0, color="k")
   PyPlot.ylim(xmax .*(T(-1.05), T(1.05)))
-  xfmt(round(Int64, first(xti)), round(Int64, last(xti)), fmt, true, N_ticks)
+  xfmt(round(Int64, first(xti)), round(Int64, last(xti)), fmt, N_ticks)
   PyPlot.xlabel(ax_ts.get_xlabel(), fontsize=12.0, color="black", fontweight="bold", family="serif")
   PyPlot.yticks([-xmax, zero(T), xmax], ["-"*ts_xl, "0.00e00", "+"*ts_xl])
   PyPlot.setp(ax_ts.get_yticklabels(), fontsize=9.0, color="black", fontweight="bold", family="serif")

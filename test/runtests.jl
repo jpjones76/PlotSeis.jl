@@ -10,24 +10,37 @@ printstyled(stdout, string(test_start, ": tests begin, source_dir = ", path, "/\
 
 printstyled("Generating data\n", color=:light_green, bold=true)
 n = (4,5,10,15,20,23,25)
-A = Array{SeisData,1}(undef, 10)
+A = Array{SeisData,1}(undef, 12)
 for i = 1:7
   A[i] = randSeisData(n[i])
 end
 
 S = SeisData(randSeisChannel(s=true))
+# timespan crosses a year boundary
 S.x[1] = randn(200000)
 S.fs[1] = 50.0
 S.t[1] = [1 -100000; 200000 0]
 A[8] = deepcopy(S)
 
-S.t[1] = [1 1; 200000 0]
+# timespan crosses a day boundary
+S.t[1] = [1 86300000000; 200000 0]
 A[9] = deepcopy(S)
 
+# timespan crosses an hour boundary
+S.t[1] = [1 1; 200000 0]
+A[10] = deepcopy(S)
+
+# timespan crosses a minute boundary
+S.x[1] = rand(60000)
+S.fs[1] = 1000.0
+S.t[1] = [1 1; 60000 0]
+A[11] = deepcopy(S)
+
+# timespan under a minute
 S.x[1] = randn(2000)
 S.t[1] = [1 0; 2000 0]
 S.fs[1] = 4000.0
-A[10] = deepcopy(S)
+A[12] = deepcopy(S)
 
 printstyled("Testing plots\n", color=:light_green, bold=true)
 for S in A
@@ -43,7 +56,7 @@ for S in A
   end
 end
 
-plotseis(S, fmt = "%H:%M:%S")
+plotseis(A[10], fmt = "%H:%M:%S")
 
 test_end = now()
 δt = 0.001*(test_end-test_start).value

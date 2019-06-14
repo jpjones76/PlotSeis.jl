@@ -2,7 +2,7 @@ rescaled(x::Array{Float32,1},i::Int) = Float32(i) .+ x.*(1.0f0/(2.0f0*maximum(ab
 rescaled(x::Array{Float64,1},i::Int) = Float64(i) .+ x.*(1.0/(2.0*maximum(abs.(x))))
 
 # Formatted X labels
-function xfmt(xmi::Int64, xma::Int64, fmt::String, auto_x::Bool, N::Int64)
+function xfmt(xmi::Int64, xma::Int64, fmt::String, N::Int64)
   dt = (xma-xmi)
   tzcorr = Libc.TmStruct(time())._11
 
@@ -48,19 +48,16 @@ function xfmt(xmi::Int64, xma::Int64, fmt::String, auto_x::Bool, N::Int64)
     fontsize=12.0, color="black", fontweight="bold", family="serif")
   end
 
-  if auto_x
-    dt = dt / (N-1)
-    xt = Array{Float64,1}(undef, N)
-    xl = Array{String,1}(undef, N)
-    t = xmi
-    for i = 1:N
-      setindex!(xt, t, i)
-      setindex!(xl, Libc.strftime(fmt, xt[i]*μs), i)
-      t = t + dt
-    end
-    # plot!(xlims = (xmi, xma), xticks = (xt, xl))
-    PyPlot.xlim(xmi, xma)
-    PyPlot.xticks(xt, xl)
+  dt = dt / (N-1)
+  xt = Array{Float64,1}(undef, N)
+  xl = Array{String,1}(undef, N)
+  t = xmi
+  for i = 1:N
+    setindex!(xt, t, i)
+    setindex!(xl, Libc.strftime(fmt, xt[i]*μs), i)
+    t = t + dt
   end
+  PyPlot.xlim(xmi, xma)
+  PyPlot.xticks(xt, xl)
   return nothing
 end

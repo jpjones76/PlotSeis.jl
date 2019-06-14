@@ -34,7 +34,7 @@ function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, nxt::Int64)
   PyPlot.setp(gca().get_yticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
 
   # X scaling and axis manipulation
-  xfmt(xmi, xma, fmt, true, nxt)
+  xfmt(xmi, xma, fmt, nxt)
   PyPlot.setp(gca().get_xticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
 
   return fig
@@ -80,7 +80,7 @@ function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, nxt::Int64)
   PyPlot.setp(gca().get_yticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
 
   # X scaling and axis manipulation
-  xfmt(first(t)*1000000, last(t)*1000000, fmt, true, nxt)
+  xfmt(first(t)*1000000, last(t)*1000000, fmt, nxt)
   PyPlot.setp(gca().get_xticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
   return fig
 end
