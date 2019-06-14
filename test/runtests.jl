@@ -9,19 +9,25 @@ test_start = now()
 printstyled(stdout, string(test_start, ": tests begin, source_dir = ", path, "/\n"), color=:light_green, bold=true)
 
 printstyled("Generating data\n", color=:light_green, bold=true)
-n = (1,1,4,10,15,20,23,25)
-A = Array{SeisData,1}(undef, 8)
-A[1] = SeisData(randSeisChannel(s=true))
-A[1].x[1] = randn(100000)
-A[1].t[1] = [1 -100000; 100000 0]
-A[1].fs[1] = 50.0
-A[2] = SeisData(randSeisChannel(s=true))
-A[2].x[1] = randn(2000)
-A[2].t[1] = [1 0; 2000 0]
-A[2].fs[1] = 4000.0
-for i = 3:8
+n = (4,5,10,15,20,23,25)
+A = Array{SeisData,1}(undef, 10)
+for i = 1:7
   A[i] = randSeisData(n[i])
 end
+
+S = SeisData(randSeisChannel(s=true))
+S.x[1] = randn(200000)
+S.fs[1] = 50.0
+S.t[1] = [1 -100000; 200000 0]
+A[8] = deepcopy(S)
+
+S.t[1] = [1 1; 200000 0]
+A[9] = deepcopy(S)
+
+S.x[1] = randn(2000)
+S.t[1] = [1 0; 2000 0]
+S.fs[1] = 4000.0
+A[10] = deepcopy(S)
 
 printstyled("Testing plots\n", color=:light_green, bold=true)
 for S in A
@@ -36,6 +42,8 @@ for S in A
     close()
   end
 end
+
+plotseis(S, fmt = "%H:%M:%S")
 
 test_end = now()
 δt = 0.001*(test_end-test_start).value
