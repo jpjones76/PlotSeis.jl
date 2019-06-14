@@ -4,14 +4,13 @@
 Renormalized, time-aligned trace plot of data in S.x using timestamps in S.t.
 
 Keywords:
-* fmt=FMT formats x-axis labels using C-language `strftime` format string `FMT`
-to format x-labels. If unspecified, the format is determined by when data in `S`
-start and end.
+* fmt=FMT formats x-axis labels using C-language `strftime` format string `FMT`.
+If unspecified, the format is determined by when data in `S` start and end.
 * use_name=true uses `S.name`, rather than `S.id`, for labels.
 * n=N sets the number of X-axis ticks.
 
 """
-function plotseis(S::SeisData; fmt="auto"::String, use_name=false::Bool, n::Int64=5)
+function plotseis(S::SeisData; fmt::String="auto", use_name::Bool=false, nxt::Int64=5)
   xmi = typemax(Int64)
   xma = typemin(Int64)
 
@@ -30,7 +29,7 @@ function plotseis(S::SeisData; fmt="auto"::String, use_name=false::Bool, n::Int6
     xma = max(xma, t[end])
   end
 
-  xfmt(xmi, xma, fmt, true, n)
+  xfmt(xmi, xma, fmt, true, nxt)
   PyPlot.setp(gca().get_yticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
   PyPlot.setp(gca().get_xticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
   PyPlot.yticks(1:S.n, map((i) -> replace(i, " " => ""), use_name ? S.name : S.id))

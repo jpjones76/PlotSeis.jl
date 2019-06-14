@@ -49,7 +49,7 @@ function logspec(S::SeisData, k::Union{Int64,String};
   xtl = fill!(Array{String,1}(undef, length(xti)), "")
 
   # truncate P, y
-  i0 = max(2, findfirst(f.≥min(2.0*fs/nx, fmin)))     # First sane frequency index
+  i0 = max(2, findfirst(f.≥max(0.5*fs/nx, fmin)))     # First sane frequency index
   i1 = findlast(f.≤fmax)                              # Last sane frequency index
   P = P[i0:i1, :]
   y = log10.(f)[i0:i1]

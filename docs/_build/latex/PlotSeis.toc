@@ -1,0 +1,7 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Installation}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Time-Series Plots}{1}{section.1.1}
+\contentsline {subsection}{\numberline {1.1.1}Keywords}{1}{subsection.1.1.1}
+\contentsline {section}{\numberline {1.2}Time-Frequency Plots}{1}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Keywords}{2}{subsection.1.2.1}
+\contentsline {chapter}{Index}{3}{section*.6}

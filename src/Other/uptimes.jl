@@ -1,4 +1,4 @@
-function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
+function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, nxt::Int64)
   xmi = 2^63-1
   xma = xmi+1
   fig = PyPlot.figure(figsize=[8.0, 6.0], dpi=150)
@@ -34,13 +34,13 @@ function uptimes_bar(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   PyPlot.setp(gca().get_yticklabels(), fontsize=8.0, color="black", fontweight="bold", family="serif")
 
   # X scaling and axis manipulation
-  xfmt(xmi, xma, fmt, true, 5)
+  xfmt(xmi, xma, fmt, true, nxt)
   PyPlot.setp(gca().get_xticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
 
   return fig
 end
 
-function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
+function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, nxt::Int64)
   ntr = sum(S.fs.>0)
   W = Array{Int64, 1}(undef, 0)
   for i = 1:S.n
@@ -80,7 +80,7 @@ function uptimes_sum(S::SeisData, fmt::String, use_name::Bool, auto_x::Bool)
   PyPlot.setp(gca().get_yticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
 
   # X scaling and axis manipulation
-  xfmt(first(t)*1000000, last(t)*1000000, fmt, true, 5)
+  xfmt(first(t)*1000000, last(t)*1000000, fmt, true, nxt)
   PyPlot.setp(gca().get_xticklabels(), fontsize=10.0, color="black", fontweight="bold", family="serif")
   return fig
 end
@@ -90,15 +90,15 @@ end
 
 Bar plot of uptimes for each channel in S.
 
-If summed==true, make a bar plot of uptimes for all channels in S that record
-timeseries data, scaled so that y=1 corresponds to 100% of channels active.
-Non-timeseries data in S are not counted in a summed uptime plot.
+If summed==true, plot uptimes for all channels in S that record timeseries data,
+scaled so that y=1 corresponds to 100% of channels active. Non-timeseries
+channels in S are not counted toward the cumulative total in a summed uptime plot.
 """
-function uptimes(S::SeisData; summed::Bool=false, fmt="auto"::String, use_name=false::Bool, auto_x=true::Bool)
+function uptimes(S::SeisData; summed::Bool=false, fmt::String="auto", use_name::Bool=false, nxt::Int64=5)
   if summed
-    fig = uptimes_sum(S, fmt, use_name, auto_x)
+    fig = uptimes_sum(S, fmt, use_name, nxt)
   else
-    fig = uptimes_bar(S, fmt, use_name, auto_x)
+    fig = uptimes_bar(S, fmt, use_name, nxt)
   end
   return fig
 end
