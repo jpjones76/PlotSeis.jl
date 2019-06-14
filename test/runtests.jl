@@ -31,9 +31,9 @@ S.t[1] = [1 1; 200000 0]
 A[10] = deepcopy(S)
 
 # timespan crosses a minute boundary
-S.x[1] = rand(60000)
+S.x[1] = rand(120000)
 S.fs[1] = 1000.0
-S.t[1] = [1 1; 60000 0]
+S.t[1] = [1 1; 120000 0]
 A[11] = deepcopy(S)
 
 # timespan under a minute
@@ -51,12 +51,11 @@ for S in A
     close()
   end
   if length(S.x[1]) ≥ 10000 && S.fs[1] > 0.0
-    logspec(S, 1, fmin=0.01)
+    logspec(S, 1, fmin = S.fs[1] > 100.0 ? 1.0 : 0.01)
     close()
   end
 end
-
-plotseis(A[10], fmt = "%H:%M:%S")
+plotseis(A[9], fmt = "%H:%M:%S")
 
 test_end = now()
 δt = 0.001*(test_end-test_start).value
