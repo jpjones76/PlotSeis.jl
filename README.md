@@ -3,7 +3,7 @@
 
 A visualization tool for SeisIO.jl [based on PyPlot](./NOTE.md).
 
-## Installation | [Documentation](http://plotseis.readthedocs.org)
+## Installation | [Documentation](http://plotseisjl.readthedocs.io)
 1. Ensure Python is installed and working on your machine.
 2. [Install matplotlib for Python.](https://matplotlib.org/users/installing.html)
 3. Run these commands from the Julia prompt:
