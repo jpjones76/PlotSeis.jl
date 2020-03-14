@@ -20,13 +20,13 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = u'PlotSeis'
-copyright = u'2019, Joshua Jones'
-author = u'Joshua Jones'
+copyright = u'2019-2020, Joshua P. Jones, Ph.D.'
+author = u'Joshua P. Jones, Ph.D.'
 
 # The short X.Y version
-version = u''
+version = u'0.1'
 # The full version, including alpha/beta/rc tags
-release = u''
+release = u'0.1.0'
 
 
 # -- General configuration ---------------------------------------------------

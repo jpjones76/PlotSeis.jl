@@ -10,14 +10,8 @@ Installation
 ************
 1. Ensure Python is installed and working on your machine.
 2. [Install matplotlib for Python.](https://matplotlib.org/users/installing.html)
-3. Run these commands from the Julia prompt:
-
-::
-
-  ]
-  add https://github.com/jpjones76/PlotSeis.jl
-  ^C
-  using PlotSeis
+3. From the Julia prompt, press "]" to enter package mode, then type "add PlotSeis"
+4. Exit package mode with "^C", then type "using PlotSeis"
 
 .. toctree::
    :caption: Contents
