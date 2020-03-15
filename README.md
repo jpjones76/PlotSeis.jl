@@ -5,6 +5,13 @@ A visualization tool for SeisIO.jl [based on PyPlot](./NOTE.md).
 
 ## Installation | [Documentation](http://plotseisjl.readthedocs.io)
 1. Ensure Python is installed and working on your machine.
-2. [Install matplotlib for Python.](https://matplotlib.org/users/installing.html)
+2. [Install matplotlib for Python.](https://matplotlib.org/users/installing.html) *
 3. From the Julia prompt, press "]" to enter package mode, then type "add PlotSeis"
 4. Exit package mode with "^C", then type "using PlotSeis"
+
+\* for OS X, we recommend the [Homebrew](https://brew.sh/) installation instructions of [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl):
+```
+brew install python gcc freetype pyqt
+brew link --force freetype
+pip install numpy scipy matplotlib
+```
